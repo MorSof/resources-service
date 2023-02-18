@@ -1,16 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { Resource } from '../models/resource.model';
+import { ResourceModel } from '../models/resource.model';
 import { ResourceEntity } from '../entities/resource.entity';
 
 @Injectable()
 export class ResourcesEntityConverter {
-  public convertFrom(resourceEntity: ResourceEntity): Resource {
-    const { id, name, email } = resourceEntity;
-    return new Resource({ id, name, email });
+  toEntity(resource: ResourceModel): ResourceEntity {
+    const entity = new ResourceEntity();
+    entity.id = resource.id;
+    entity.belongId = resource.belongId;
+    entity.belongType = resource.belongType;
+    entity.type = resource.type;
+    entity.name = resource.name;
+    entity.amount = resource.amount;
+    entity.receivingProbability = resource.receivingProbability;
+    entity.rarenessProbability = resource.rarenessProbability;
+    entity.extraArgs = resource.extraArgs;
+    return entity;
   }
 
-  public convertTo(resource: Resource): ResourceEntity {
-    const { id, name, email } = resource;
-    return new ResourceEntity({ id, name, email });
+  toModel(entity: ResourceEntity): ResourceModel {
+    const model = new ResourceModel();
+    model.id = entity.id;
+    model.belongId = entity.belongId;
+    model.belongType = entity.belongType;
+    model.type = entity.type;
+    model.name = entity.name;
+    model.amount = entity.amount;
+    model.receivingProbability = entity.receivingProbability;
+    model.rarenessProbability = entity.rarenessProbability;
+    model.extraArgs = entity.extraArgs;
+    return model;
   }
 }

@@ -1,36 +1,52 @@
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ResourceResponseDto {
-  @ApiModelProperty({
-    type: 'string',
-    description: 'The id of the resource',
-    required: true,
-  })
-  id: string;
+  @ApiProperty()
+  id: number;
 
-  @ApiModelProperty({
-    type: 'string',
-    description: 'The name of the resource',
-    required: true,
+  @ApiProperty()
+  belongId: string;
+
+  @ApiProperty({
+    enum: ['USER', 'LEVEL'],
   })
+  belongType: string;
+
+  @ApiProperty({
+    enum: ['CURRENCY', 'BOOSTER'],
+  })
+  type: string;
+
+  @ApiProperty()
   name: string;
 
-  @ApiModelProperty({
-    type: 'string',
-    description: 'The email of the resource',
-    required: true,
+  @ApiProperty({
+    nullable: true,
   })
-  email: string;
+  amount: number;
 
-  @ApiModelProperty({
-    type: ResourceResponseDto,
-    description: 'The storage of the resource',
-    isArray: true,
-    required: true,
+  @ApiProperty({
+    nullable: true,
   })
-  storage?: ResourceResponseDto[];
+  receivingProbability: number;
 
-  constructor(partial: Partial<ResourceResponseDto>) {
-    Object.assign(this, partial);
-  }
+  @ApiProperty({
+    nullable: true,
+  })
+  rarenessProbability: number;
+
+  @ApiProperty({
+    nullable: true,
+  })
+  extraArgs: object;
+
+  @ApiProperty({
+    type: Date,
+  })
+  updatedAt: Date;
+
+  @ApiProperty({
+    type: Date,
+  })
+  createdAt: Date;
 }
