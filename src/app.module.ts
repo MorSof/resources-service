@@ -3,9 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import entities from './db';
-import { WorldsModule } from './worlds/worlds.module';
+import { ResourcesModule } from './resources/resources.module';
+import { ResourceEntity } from './resources/entities/resource.entity';
 
 @Module({
   imports: [
@@ -19,13 +18,12 @@ import { WorldsModule } from './worlds/worlds.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: entities,
+        entities: [ResourceEntity],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
-    WorldsModule,
+    ResourcesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

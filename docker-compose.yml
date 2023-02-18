@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  app:
-    container_name: rings-quest-back
+  resources_service:
+    container_name: resources_service
     build: .
-    image: morsof48/rings-quest-back:latest
+    image: morsof48/resources_service:latest
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -12,7 +12,7 @@ services:
       DB_PASSWORD: admin
       DB_NAME: postgres
     ports:
-      - "3555:3000"
+      - "3002:3002"
     depends_on:
       - db
 

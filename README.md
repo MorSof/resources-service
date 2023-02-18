@@ -100,7 +100,7 @@ $ npm run test:cov
 
 - You should use this CLI commands to generate controllers/services/modules:
 ```shell
-$ nest generate module users
-$ nest g controller users/controllers/users
-$ nest g service users/services/users
+$ nest generate module resources
+$ nest g controller resources/controllers/resources
+$ nest g service resources/services/resources
 ```
