@@ -42,4 +42,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: morsof48/rings-quest-back:latest
+          tags: morsof48/resources-service:latest
