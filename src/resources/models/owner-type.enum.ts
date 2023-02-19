@@ -1,4 +1,4 @@
-export enum BelongType {
+export enum OwnerType {
   USER = 'user',
   LEVEL = 'level',
 }

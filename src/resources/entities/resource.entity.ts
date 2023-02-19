@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { BelongType } from '../models/belong-type.enum';
+import { OwnerType } from '../models/owner-type.enum';
 import { ResourceType } from '../models/resource-type.enum';
 
 @Entity({ name: 'resources' })
@@ -15,13 +15,13 @@ export class ResourceEntity {
   id: number;
 
   @Column()
-  belongId: string;
+  ownerId: string;
 
   @Column({
     type: 'enum',
-    enum: BelongType,
+    enum: OwnerType,
   })
-  belongType: BelongType;
+  ownerType: OwnerType;
 
   @Column({
     type: 'enum',

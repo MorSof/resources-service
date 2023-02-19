@@ -3,7 +3,7 @@ import { CreateResourceRequestDto } from '../dtos/create-resource-request.dto';
 import { ResourceModel } from '../models/resource.model';
 import { ResourceResponseDto } from '../dtos/resource-response.dto';
 import { UpdateResourceRequestDto } from '../dtos/update-resource-request.dto';
-import { BelongType } from '../models/belong-type.enum';
+import { OwnerType } from '../models/owner-type.enum';
 import { ResourceType } from '../models/resource-type.enum';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class ResourcesDtoConverter {
   ): ResourceModel {
     const model = new ResourceModel();
 
-    model.belongId = dto.belongId;
-    model.belongType = BelongType[dto.belongType];
+    model.ownerId = dto.ownerId;
+    model.ownerType = OwnerType[dto.ownerType];
     model.type = ResourceType[dto.type];
     model.name = dto.name;
     model.amount = dto.amount;
@@ -29,8 +29,8 @@ export class ResourcesDtoConverter {
     const dto = new ResourceResponseDto();
 
     dto.id = model.id;
-    dto.belongId = model.belongId;
-    dto.belongType = model.belongType;
+    dto.ownerId = model.ownerId;
+    dto.ownerType = model.ownerType;
     dto.type = model.type;
     dto.name = model.name;
     dto.amount = model.amount;

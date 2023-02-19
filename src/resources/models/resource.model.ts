@@ -1,10 +1,10 @@
 import { ResourceType } from './resource-type.enum';
-import { BelongType } from './belong-type.enum';
+import { OwnerType } from './owner-type.enum';
 
 export class ResourceModel {
   id: number;
-  belongId: string;
-  belongType: BelongType;
+  ownerId: string;
+  ownerType: OwnerType;
   type: ResourceType;
   name: string;
   amount: number | null;

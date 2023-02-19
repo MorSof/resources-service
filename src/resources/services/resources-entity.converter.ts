@@ -7,8 +7,8 @@ export class ResourcesEntityConverter {
   toEntity(resource: ResourceModel): ResourceEntity {
     const entity = new ResourceEntity();
     entity.id = resource.id;
-    entity.belongId = resource.belongId;
-    entity.belongType = resource.belongType;
+    entity.ownerId = resource.ownerId;
+    entity.ownerType = resource.ownerType;
     entity.type = resource.type;
     entity.name = resource.name;
     entity.amount = resource.amount;
@@ -21,8 +21,8 @@ export class ResourcesEntityConverter {
   toModel(entity: ResourceEntity): ResourceModel {
     const model = new ResourceModel();
     model.id = entity.id;
-    model.belongId = entity.belongId;
-    model.belongType = entity.belongType;
+    model.ownerId = entity.ownerId;
+    model.ownerType = entity.ownerType;
     model.type = entity.type;
     model.name = entity.name;
     model.amount = entity.amount;

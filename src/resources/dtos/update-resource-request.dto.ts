@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateResourceRequestDto {
   @ApiProperty()
-  readonly belongId: string;
+  readonly ownerId: string;
 
   @ApiProperty({
     enum: ['user', 'level'],
     default: 'user',
   })
-  readonly belongType: string;
+  readonly ownerType: string;
 
   @ApiProperty({
     enum: ['CURRENCY', 'BOOSTER'],

@@ -5,12 +5,12 @@ export class ResourceResponseDto {
   id: number;
 
   @ApiProperty()
-  belongId: string;
+  ownerId: string;
 
   @ApiProperty({
     enum: ['USER', 'LEVEL'],
   })
-  belongType: string;
+  ownerType: string;
 
   @ApiProperty({
     enum: ['CURRENCY', 'BOOSTER'],

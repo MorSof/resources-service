@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ResourceEntity } from '../entities/resource.entity';
 import { ResourcesEntityConverter } from './resources-entity.converter';
 import { ResourceModel } from '../models/resource.model';
-import { BelongType } from '../models/belong-type.enum';
+import { OwnerType } from '../models/owner-type.enum';
 
 @Injectable()
 export class ResourcesService {
@@ -23,11 +27,11 @@ export class ResourcesService {
   }
 
   async update(id: number, resource: ResourceModel): Promise<ResourceModel> {
-    const entity = await this.resourceRepository.findOneBy({ id });
+    let entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
-    this.converter.toEntity(resource);
+    entity = this.converter.toEntity(resource);
     const updatedEntity = await this.resourceRepository.save(entity);
     return this.converter.toModel(updatedEntity);
   }
@@ -48,12 +52,12 @@ export class ResourcesService {
   }
 
   async findByValues(
-    belongId: string,
-    belongType: BelongType,
+    ownerId: string,
+    ownerType: OwnerType,
     fulfillProbability?: boolean,
   ): Promise<ResourceModel[]> {
     const entities = await this.resourceRepository.find({
-      where: { belongId, belongType },
+      where: { ownerId, ownerType },
     });
     const models = entities.map((entity) => this.converter.toModel(entity));
     // if (fulfillProbability) {
@@ -74,7 +78,11 @@ export class ResourcesService {
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
-    // TODO business login
+    if (entity.amount != null) {
+      entity.amount += amount;
+    } else {
+      throw new BadRequestException(`Resource with id ${id} amount is null`);
+    }
     const updatedEntity = await this.resourceRepository.save(entity);
     return this.converter.toModel(updatedEntity);
   }
@@ -84,7 +92,15 @@ export class ResourcesService {
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
-    // TODO business login
+    if (entity.amount != null) {
+      if (entity.amount - amount > 0) {
+        entity.amount -= amount;
+      } else {
+        entity.amount = 0;
+      }
+    } else {
+      throw new BadRequestException(`Resource with id ${id} amount is null`);
+    }
     const updatedEntity = await this.resourceRepository.save(entity);
     return this.converter.toModel(updatedEntity);
   }
