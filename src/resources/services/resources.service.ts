@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ResourceEntity } from '../entities/resource.entity';
 import { ResourcesEntityConverter } from './resources-entity.converter';
-import { ResourceModel } from '../models/resource.model';
+import { Resource } from '../models/resource.model';
 import { OwnerType } from '../models/owner-type.enum';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ResourcesService {
     private readonly converter: ResourcesEntityConverter,
   ) {}
 
-  async create(resources: ResourceModel[]): Promise<ResourceModel[]> {
+  async create(resources: Resource[]): Promise<Resource[]> {
     let resourceEntities: ResourceEntity[] = resources.map((resource) =>
       this.converter.toEntity(resource),
     );
@@ -26,7 +26,7 @@ export class ResourcesService {
     return resourceEntities.map((entity) => this.converter.toModel(entity));
   }
 
-  async update(id: number, resource: ResourceModel): Promise<ResourceModel> {
+  async update(id: number, resource: Resource): Promise<Resource> {
     let entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
@@ -36,23 +36,33 @@ export class ResourcesService {
     return this.converter.toModel(updatedEntity);
   }
 
-  async findById(id: number): Promise<ResourceModel> {
+  async findById(
+    id: number,
+    fulfillProbability?: boolean,
+  ): Promise<Resource> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
     const model = this.converter.toModel(entity);
+    // if (fulfillProbability) {
+    // TODO business login
+    // }
     return model;
   }
 
   async findByValues(
     ownerId: string,
     ownerType: OwnerType,
-  ): Promise<ResourceModel[]> {
+    fulfillProbability?: boolean,
+  ): Promise<Resource[]> {
     const entities = await this.resourceRepository.find({
       where: { ownerId, ownerType },
     });
     const models = entities.map((entity) => this.converter.toModel(entity));
+    // if (fulfillProbability) {
+    //   TODO business login
+    // }
     return models;
   }
 
@@ -63,7 +73,7 @@ export class ResourcesService {
     }
   }
 
-  async collect(id: number, amount: number): Promise<ResourceModel> {
+  async collect(id: number, amount: number): Promise<Resource> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
@@ -77,7 +87,7 @@ export class ResourcesService {
     return this.converter.toModel(updatedEntity);
   }
 
-  async use(id: number, amount: number): Promise<ResourceModel> {
+  async use(id: number, amount: number): Promise<Resource> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);

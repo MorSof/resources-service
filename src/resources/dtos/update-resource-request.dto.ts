@@ -1,23 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { OwnerType } from '../models/owner-type.enum';
+import { ResourceType } from '../models/resource-type.enum';
+import { ResourcesNames } from '../models/resources-names.enum';
 
 export class UpdateResourceRequestDto {
   @ApiProperty()
   readonly ownerId: string;
 
   @ApiProperty({
-    enum: ['user', 'level'],
+    enum: [Object.values(OwnerType)],
     default: 'user',
   })
-  readonly ownerType: string;
+  readonly ownerType: OwnerType;
 
   @ApiProperty({
-    enum: ['CURRENCY', 'BOOSTER'],
-    default: 'CURRENCY',
+    enum: [Object.values(ResourceType)],
+    default: 'currency',
   })
-  readonly type: string;
+  readonly type: ResourceType;
 
-  @ApiProperty()
-  readonly name: string;
+  @ApiProperty({
+    enum: [Object.values(ResourcesNames)],
+    default: 'coins',
+  })
+  readonly name: ResourcesNames;
 
   @ApiProperty({
     type: 'number',

@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ResourceModel } from '../models/resource.model';
+import { Resource } from '../models/resource.model';
 import { ResourceEntity } from '../entities/resource.entity';
+import { ResourcesFactory } from './resources-factory.service';
 
 @Injectable()
 export class ResourcesEntityConverter {
-  toEntity(resource: ResourceModel): ResourceEntity {
+  constructor(private readonly resourcesFactory: ResourcesFactory) {
+  }
+  toEntity(resource: Resource): ResourceEntity {
     const entity = new ResourceEntity();
     entity.id = resource.id;
     entity.ownerId = resource.ownerId;
@@ -18,8 +21,8 @@ export class ResourcesEntityConverter {
     return entity;
   }
 
-  toModel(entity: ResourceEntity): ResourceModel {
-    const model = new ResourceModel();
+  toModel(entity: ResourceEntity): Resource {
+    const model = this.resourcesFactory.create(entity.name);
     model.id = entity.id;
     model.ownerId = entity.ownerId;
     model.ownerType = entity.ownerType;

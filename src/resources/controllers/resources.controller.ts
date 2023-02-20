@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -24,7 +26,7 @@ import {
 import { ResourceResponseDto } from '../dtos/resource-response.dto';
 import { CreateResourceRequestDto } from '../dtos/create-resource-request.dto';
 import { UpdateResourceRequestDto } from '../dtos/update-resource-request.dto';
-import { ResourceModel } from '../models/resource.model';
+import { Resource } from '../models/resource.model';
 import { ResourcesDtoConverter } from '../services/resources-dto.converter';
 import { ResourcesService } from '../services/resources.service';
 import { OwnerType } from '../models/owner-type.enum';
@@ -50,7 +52,7 @@ export class ResourcesController {
   async create(
     @Body() createResourcesRequestDto: CreateResourceRequestDto[],
   ): Promise<ResourceResponseDto[]> {
-    let resourceModels: ResourceModel[] = createResourcesRequestDto.map(
+    let resourceModels: Resource[] = createResourcesRequestDto.map(
       (resourceDto: CreateResourceRequestDto) =>
         this.resourcesDtoConverter.toModel(resourceDto),
     );
@@ -72,7 +74,7 @@ export class ResourcesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateResourceDto: UpdateResourceRequestDto,
   ): Promise<ResourceResponseDto> {
-    let resource: ResourceModel =
+    let resource: Resource =
       this.resourcesDtoConverter.toModel(updateResourceDto);
     resource = await this.resourcesService.update(id, resource);
     if (!resource) {
@@ -86,11 +88,17 @@ export class ResourcesController {
     type: ResourceResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiQuery({ name: 'fulfill_probability', type: Boolean, required: false })
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe) id: number,
+    @Query('fulfill_probability', new DefaultValuePipe(false), ParseBoolPipe)
+    fulfillProbability: boolean,
   ): Promise<ResourceResponseDto> {
-    const resource = await this.resourcesService.findById(id);
+    const resource = await this.resourcesService.findById(
+      id,
+      fulfillProbability,
+    );
     if (!resource) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
@@ -102,16 +110,20 @@ export class ResourcesController {
     type: ResourceResponseDto,
     isArray: true,
   })
+  @ApiQuery({ name: 'fulfill_probability', type: Boolean, required: false })
   @ApiQuery({ name: 'owner_id', type: String, required: false })
   @ApiQuery({ name: 'owner_type', type: String, required: false })
   @Get()
   async findByValue(
     @Query('owner_id') ownerId: string,
     @Query('owner_type') ownerType: string,
+    @Query('fulfill_probability', new DefaultValuePipe(false), ParseBoolPipe)
+    fulfillProbability: boolean,
   ): Promise<ResourceResponseDto[]> {
-    const resources: ResourceModel[] = await this.resourcesService.findByValues(
+    const resources: Resource[] = await this.resourcesService.findByValues(
       ownerId,
       OwnerType[ownerType],
+      fulfillProbability,
     );
     return resources.map((resource) =>
       this.resourcesDtoConverter.toDto(resource),

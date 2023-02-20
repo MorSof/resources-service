@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { OwnerType } from '../models/owner-type.enum';
+import { ResourceType } from '../models/resource-type.enum';
+import { ResourcesNames } from '../models/resources-names.enum';
 
 export class ResourceResponseDto {
   @ApiProperty()
@@ -8,17 +11,19 @@ export class ResourceResponseDto {
   ownerId: string;
 
   @ApiProperty({
-    enum: ['USER', 'LEVEL'],
+    enum: [Object.values(OwnerType)],
   })
-  ownerType: string;
+  ownerType: OwnerType;
 
   @ApiProperty({
-    enum: ['CURRENCY', 'BOOSTER'],
+    enum: [Object.values(ResourceType)],
   })
-  type: string;
+  type: ResourceType;
 
-  @ApiProperty()
-  name: string;
+  @ApiProperty({
+    enum: [Object.values(ResourcesNames)],
+  })
+  name: ResourcesNames;
 
   @ApiProperty({
     nullable: true,

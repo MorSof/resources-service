@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { OwnerType } from '../models/owner-type.enum';
 import { ResourceType } from '../models/resource-type.enum';
+import { ResourcesNames } from '../models/resources-names.enum';
 
 @Entity({ name: 'resources' })
 export class ResourceEntity {
@@ -29,8 +30,11 @@ export class ResourceEntity {
   })
   type: ResourceType;
 
-  @Column()
-  name: string;
+  @Column({
+    type: 'enum',
+    enum: ResourcesNames,
+  })
+  name: ResourcesNames;
 
   @Column({
     nullable: true,
