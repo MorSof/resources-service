@@ -36,18 +36,15 @@ export class ResourcesService {
     return this.converter.toModel(updatedEntity);
   }
 
-  async findById(
-    id: number,
-    fulfillProbability?: boolean,
-  ): Promise<Resource> {
+  async findById(id: number, fulfillProbability?: boolean): Promise<Resource> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
     const model = this.converter.toModel(entity);
-    // if (fulfillProbability) {
-    // TODO business login
-    // }
+    if (fulfillProbability) {
+      model.fulfillProbability();
+    }
     return model;
   }
 
@@ -60,9 +57,9 @@ export class ResourcesService {
       where: { ownerId, ownerType },
     });
     const models = entities.map((entity) => this.converter.toModel(entity));
-    // if (fulfillProbability) {
-    //   TODO business login
-    // }
+    if (fulfillProbability) {
+      models.forEach((model) => model.fulfillProbability());
+    }
     return models;
   }
 

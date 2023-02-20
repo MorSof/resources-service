@@ -5,8 +5,7 @@ import { ResourcesFactory } from './resources-factory.service';
 
 @Injectable()
 export class ResourcesEntityConverter {
-  constructor(private readonly resourcesFactory: ResourcesFactory) {
-  }
+  constructor(private readonly resourcesFactory: ResourcesFactory) {}
   toEntity(resource: Resource): ResourceEntity {
     const entity = new ResourceEntity();
     entity.id = resource.id;

@@ -42,17 +42,13 @@ export class ResourceEntity {
   amount: number;
 
   @Column({
-    type: 'numeric',
-    precision: 3,
-    scale: 2,
+    type: 'float',
     nullable: true,
   })
   receivingProbability: number;
 
   @Column({
-    type: 'numeric',
-    precision: 3,
-    scale: 2,
+    type: 'float',
     nullable: true,
   })
   rarenessProbability: number;

@@ -29,8 +29,9 @@ export class CreateResourceRequestDto {
     type: 'number',
     required: false,
     nullable: true,
+    default: null,
   })
-  readonly amount: number;
+  readonly amount?: number;
 
   @ApiProperty({
     type: 'number',
@@ -38,6 +39,7 @@ export class CreateResourceRequestDto {
     nullable: true,
     minimum: 0,
     maximum: 1,
+    default: 1,
   })
   readonly receivingProbability: number;
 
@@ -47,6 +49,7 @@ export class CreateResourceRequestDto {
     nullable: true,
     minimum: 0,
     maximum: 1,
+    default: 0.5,
   })
   readonly rarenessProbability: number;
 
