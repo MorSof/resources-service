@@ -11,6 +11,7 @@ export class ResourcesEntityConverter {
     entity.id = resource.id;
     entity.ownerId = resource.ownerId;
     entity.ownerType = resource.ownerType;
+    entity.groupId = resource.groupId;
     entity.type = resource.type;
     entity.name = resource.name;
     entity.amount = resource.amount;
@@ -25,6 +26,7 @@ export class ResourcesEntityConverter {
     model.id = entity.id;
     model.ownerId = entity.ownerId;
     model.ownerType = entity.ownerType;
+    model.groupId = entity.groupId;
     model.type = entity.type;
     model.name = entity.name;
     model.amount = entity.amount;

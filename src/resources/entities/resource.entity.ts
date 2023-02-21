@@ -22,6 +22,11 @@ export class ResourceEntity {
   })
   ownerType: OwnerType;
 
+  @Column({
+    nullable: true,
+  })
+  groupId?: string;
+
   @Column()
   type: string;
 

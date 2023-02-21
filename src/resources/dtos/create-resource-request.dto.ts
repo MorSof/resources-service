@@ -12,6 +12,12 @@ export class CreateResourceRequestDto {
   readonly ownerType: OwnerType;
 
   @ApiProperty({
+    required: false,
+    nullable: true,
+  })
+  readonly groupId?: string;
+
+  @ApiProperty({
     default: 'currency',
   })
   readonly type: string;

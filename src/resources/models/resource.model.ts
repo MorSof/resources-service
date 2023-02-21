@@ -4,6 +4,7 @@ export abstract class Resource {
   id: number;
   ownerId: string;
   ownerType: OwnerType;
+  groupId?: string;
   type: string;
   name: string;
   amount: number | null;

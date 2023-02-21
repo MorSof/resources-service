@@ -51,10 +51,11 @@ export class ResourcesService {
   async findByValues(
     ownerId: string,
     ownerType: OwnerType,
+    groupId: string,
     fulfillProbability?: boolean,
   ): Promise<Resource[]> {
     const entities = await this.resourceRepository.find({
-      where: { ownerId, ownerType },
+      where: { ownerId, ownerType, groupId },
     });
     const models = entities.map((entity) => this.converter.toModel(entity));
     if (fulfillProbability) {

@@ -14,6 +14,7 @@ export class ResourcesDtoConverter {
     const model = this.resourcesFactory.create(dto.name, dto.type);
     model.ownerId = dto.ownerId;
     model.ownerType = dto.ownerType;
+    model.groupId = dto.groupId;
     model.type = dto.type;
     model.name = dto.name;
     model.amount = dto.amount;
@@ -28,6 +29,7 @@ export class ResourcesDtoConverter {
     dto.id = model.id;
     dto.ownerId = model.ownerId;
     dto.ownerType = model.ownerType;
+    dto.groupId = model.groupId;
     dto.type = model.type;
     dto.name = model.name;
     dto.amount = model.amount;

@@ -14,6 +14,9 @@ export class ResourceResponseDto {
   ownerType: OwnerType;
 
   @ApiProperty()
+  groupId?: string;
+
+  @ApiProperty()
   type: string;
 
   @ApiProperty()

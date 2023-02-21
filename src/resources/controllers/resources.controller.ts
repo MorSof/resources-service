@@ -113,16 +113,19 @@ export class ResourcesController {
   @ApiQuery({ name: 'fulfill_probability', type: Boolean, required: false })
   @ApiQuery({ name: 'owner_id', type: String, required: false })
   @ApiQuery({ name: 'owner_type', type: String, required: false })
+  @ApiQuery({ name: 'group_id', type: String, required: false })
   @Get()
   async findByValue(
     @Query('owner_id') ownerId: string,
     @Query('owner_type') ownerType: string,
+    @Query('group_id') groupId: string,
     @Query('fulfill_probability', new DefaultValuePipe(false), ParseBoolPipe)
     fulfillProbability: boolean,
   ): Promise<ResourceResponseDto[]> {
     const resources: Resource[] = await this.resourcesService.findByValues(
       ownerId,
       OwnerType[ownerType],
+      groupId,
       fulfillProbability,
     );
     return resources.map((resource) =>
