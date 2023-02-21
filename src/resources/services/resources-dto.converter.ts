@@ -11,7 +11,7 @@ export class ResourcesDtoConverter {
   public toModel(
     dto: CreateResourceRequestDto | UpdateResourceRequestDto,
   ): Resource {
-    const model = this.resourcesFactory.create(dto.name);
+    const model = this.resourcesFactory.create(dto.name, dto.type);
     model.ownerId = dto.ownerId;
     model.ownerType = dto.ownerType;
     model.type = dto.type;

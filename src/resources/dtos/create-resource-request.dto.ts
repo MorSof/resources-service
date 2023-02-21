@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OwnerType } from '../models/owner-type.enum';
-import { ResourceType } from '../models/resource-type.enum';
-import { ResourcesNames } from '../models/resources-names.enum';
 
 export class CreateResourceRequestDto {
   @ApiProperty()
@@ -14,16 +12,14 @@ export class CreateResourceRequestDto {
   readonly ownerType: OwnerType;
 
   @ApiProperty({
-    enum: [Object.values(ResourceType)],
     default: 'currency',
   })
-  readonly type: ResourceType;
+  readonly type: string;
 
   @ApiProperty({
-    enum: [Object.values(ResourcesNames)],
     default: 'coins',
   })
-  readonly name: ResourcesNames;
+  readonly name: string;
 
   @ApiProperty({
     type: 'number',

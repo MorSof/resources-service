@@ -3,20 +3,25 @@ import { ResourcesFactory } from '../../resources/services/resources-factory.ser
 import { Resource } from '../../resources/models/resource.model';
 import { BlackHoles } from '../models/black-holes.model';
 import { Coins } from '../models/coins.model';
-import { ResourcesNames } from '../../resources/models/resources-names.enum';
+import { ResourceType } from '../models/resource-type.enum';
+import { ResourcesNames } from '../models/resources-names.enum';
 
 @Injectable()
 export class RingsQuestResourcesFactory extends ResourcesFactory {
-  create(name: ResourcesNames): Resource {
-    console.log(ResourcesNames.COINS);
-    console.log(name);
-    console.log(ResourcesNames.COINS == name);
-    switch (name) {
-      case ResourcesNames.COINS:
-        return new Coins();
-      case ResourcesNames.BLACK_HOLES:
-        return new BlackHoles();
+  create(name: string, type: string): Resource {
+    if (type == ResourceType.CURRENCY) {
+      switch (name) {
+        case ResourcesNames.COINS:
+          return new Coins();
+      }
+    } else if (type == ResourceType.BOOSTER) {
+      switch (name) {
+        case ResourcesNames.BLACK_HOLES:
+          return new BlackHoles();
+      }
     }
-    throw new BadRequestException(`Not supported resource name ${name}`);
+    throw new BadRequestException(
+      `Not supported resource: { type: ${type}, name: ${name} }`,
+    );
   }
 }

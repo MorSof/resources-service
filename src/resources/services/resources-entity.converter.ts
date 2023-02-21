@@ -21,7 +21,7 @@ export class ResourcesEntityConverter {
   }
 
   toModel(entity: ResourceEntity): Resource {
-    const model = this.resourcesFactory.create(entity.name);
+    const model = this.resourcesFactory.create(entity.name, entity.type);
     model.id = entity.id;
     model.ownerId = entity.ownerId;
     model.ownerType = entity.ownerType;
