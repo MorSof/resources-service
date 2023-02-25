@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   resources_service:
-    container_name: resources_service
+    container_name: resources-service
     build: .
     image: morsof48/resources_service:latest
     environment:

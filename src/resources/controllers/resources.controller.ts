@@ -88,11 +88,11 @@ export class ResourcesController {
     type: ResourceResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Resource not found' })
-  @ApiQuery({ name: 'fulfill_probability', type: Boolean, required: false })
+  @ApiQuery({ name: 'fulfillProbability', type: Boolean, required: false })
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe) id: number,
-    @Query('fulfill_probability', new DefaultValuePipe(false), ParseBoolPipe)
+    @Query('fulfillProbability', new DefaultValuePipe(false), ParseBoolPipe)
     fulfillProbability: boolean,
   ): Promise<ResourceResponseDto> {
     const resource = await this.resourcesService.findById(
@@ -110,16 +110,16 @@ export class ResourcesController {
     type: ResourceResponseDto,
     isArray: true,
   })
-  @ApiQuery({ name: 'fulfill_probability', type: Boolean, required: false })
-  @ApiQuery({ name: 'owner_id', type: String, required: false })
-  @ApiQuery({ name: 'owner_type', type: String, required: false })
-  @ApiQuery({ name: 'group_id', type: String, required: false })
+  @ApiQuery({ name: 'fulfillProbability', type: Boolean, required: false })
+  @ApiQuery({ name: 'ownerId', type: String, required: false })
+  @ApiQuery({ name: 'ownerType', type: String, required: false })
+  @ApiQuery({ name: 'groupId', type: String, required: false })
   @Get()
   async findByValue(
-    @Query('owner_id') ownerId: string,
-    @Query('owner_type') ownerType: string,
-    @Query('group_id') groupId: string,
-    @Query('fulfill_probability', new DefaultValuePipe(false), ParseBoolPipe)
+    @Query('ownerId') ownerId: string,
+    @Query('ownerType') ownerType: string,
+    @Query('groupId') groupId: string,
+    @Query('fulfillProbability', new DefaultValuePipe(false), ParseBoolPipe)
     fulfillProbability: boolean,
   ): Promise<ResourceResponseDto[]> {
     const resources: Resource[] = await this.resourcesService.findByValues(
