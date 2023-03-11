@@ -3,7 +3,7 @@ name: Node.js CI
 on: [push]
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,7 +18,8 @@ jobs:
       - run: npm run build --if-present
       - run: npm test
 
-  docker:
+  push-docker-image:
+    needs: validate
     if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-latest
     steps:

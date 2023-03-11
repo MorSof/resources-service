@@ -103,7 +103,11 @@ export class ResourcesService {
       if (entity.amount - amount > 0) {
         entity.amount -= amount;
       } else {
-        entity.amount = 0;
+        throw new BadRequestException(
+          `Not enough amount to use. 
+          Requested: ${amount}, 
+          Actual: ${entity.amount}`,
+        );
       }
     } else {
       throw new BadRequestException(`Resource with id ${id} amount is null`);
