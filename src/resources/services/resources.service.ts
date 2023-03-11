@@ -71,6 +71,15 @@ export class ResourcesService {
     }
   }
 
+  async deleteByOwner(ownerType: OwnerType, ownerId: string): Promise<void> {
+    const result = await this.resourceRepository.delete({ ownerType, ownerId });
+    if (result.affected === 0) {
+      throw new NotFoundException(
+        `Resource with ownerType/ownerId ${ownerType}/${ownerId} not found`,
+      );
+    }
+  }
+
   async collect(id: number, amount: number): Promise<Resource> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {

@@ -141,6 +141,17 @@ export class ResourcesController {
     return await this.resourcesService.delete(id);
   }
 
+  @ApiResponse({ status: 200, description: 'Resource deleted successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
+  @Delete('/owner/:ownerType/:ownerId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeByOwnerId(
+    @Param('ownerType') ownerType: OwnerType,
+    @Param('ownerId') ownerId: string,
+  ): Promise<void> {
+    return await this.resourcesService.deleteByOwner(ownerType, ownerId);
+  }
+
   @ApiOkResponse({
     description: 'The resource record',
     type: ResourceResponseDto,

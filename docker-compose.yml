@@ -4,7 +4,7 @@ services:
   resources_service:
     container_name: resources-service
     build: .
-    image: morsof48/resources_service:latest
+    image: morsof48/resources-service:latest
     environment:
       DB_HOST: db
       DB_PORT: 5432
