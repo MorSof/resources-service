@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OwnerType } from '../models/owner-type.enum';
+import { InnerResourceRequestDto } from './inner-resource-request.dto';
 
-export class UpdateResourceRequestDto {
+export class BaseResourceRequestDto {
   @ApiProperty()
   readonly ownerId: string;
 
@@ -18,12 +19,12 @@ export class UpdateResourceRequestDto {
   readonly groupId?: string;
 
   @ApiProperty({
-    default: 'currency',
+    default: 'wrapper',
   })
   readonly type: string;
 
   @ApiProperty({
-    default: 'coins',
+    default: 'chest',
   })
   readonly name: string;
 
@@ -54,6 +55,14 @@ export class UpdateResourceRequestDto {
     default: 0.5,
   })
   readonly rarenessProbability: number;
+
+  @ApiProperty({
+    isArray: true,
+    type: InnerResourceRequestDto,
+    description: 'An array of resources in the resource',
+    required: false,
+  })
+  resources?: BaseResourceRequestDto[];
 
   @ApiProperty({
     type: 'object',

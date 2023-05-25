@@ -10,6 +10,7 @@ export abstract class Resource {
   amount: number | null;
   receivingProbability: number | null;
   rarenessProbability: number | null;
+  resources: Resource[];
   extraArgs: any | null;
   updatedAt: Date;
   createdAt: Date;

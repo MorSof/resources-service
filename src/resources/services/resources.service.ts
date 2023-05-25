@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ResourceEntity } from '../entities/resource.entity';
 import { ResourcesEntityConverter } from './resources-entity.converter';
 import { Resource } from '../models/resource.model';
@@ -19,11 +19,17 @@ export class ResourcesService {
   ) {}
 
   async create(resources: Resource[]): Promise<Resource[]> {
-    let resourceEntities: ResourceEntity[] = resources.map((resource) =>
-      this.converter.toEntity(resource),
-    );
-    resourceEntities = await this.resourceRepository.save(resourceEntities);
-    return resourceEntities.map((entity) => this.converter.toModel(entity));
+    const savedResources: Resource[] = [];
+    for (const resource of resources) {
+      const resourceEntity: ResourceEntity = this.converter.toEntity(resource);
+      const savedEntity: ResourceEntity = await this.resourceRepository.save(
+        resourceEntity,
+      );
+      const savedModel: Resource = this.converter.toModel(savedEntity);
+      savedResources.push(savedModel);
+    }
+
+    return savedResources;
   }
 
   async update(id: number, resource: Resource): Promise<Resource> {
@@ -32,16 +38,21 @@ export class ResourcesService {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
     entity = this.converter.toEntity(resource);
+    entity.id = id;
     const updatedEntity = await this.resourceRepository.save(entity);
     return this.converter.toModel(updatedEntity);
   }
 
   async findById(id: number, fulfillProbability?: boolean): Promise<Resource> {
-    const entity = await this.resourceRepository.findOneBy({ id });
-    if (!entity) {
+    const entities = await this.resourceRepository.find({
+      where: { id },
+      relations: ['resources'],
+    });
+
+    if (!entities || entities.length == 0) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
-    const model = this.converter.toModel(entity);
+    const model = this.converter.toModel(entities[0]);
     if (fulfillProbability) {
       model.fulfillProbability();
     }
@@ -55,11 +66,12 @@ export class ResourcesService {
     fulfillProbability?: boolean,
   ): Promise<Resource[]> {
     const entities = await this.resourceRepository.find({
-      where: { ownerId, ownerType, groupId },
+      where: { ownerId, ownerType, groupId, parent: IsNull() },
+      relations: ['resources'],
     });
     const models = entities.map((entity) => this.converter.toModel(entity));
     if (fulfillProbability) {
-      models.forEach((model) => model.fulfillProbability());
+      this.fulfillProbabilities(models);
     }
     return models;
   }
@@ -114,5 +126,14 @@ export class ResourcesService {
     }
     const updatedEntity = await this.resourceRepository.save(entity);
     return this.converter.toModel(updatedEntity);
+  }
+
+  private fulfillProbabilities(resources: Resource[]) {
+    resources.forEach((resource) => {
+      if (resource.resources) {
+        this.fulfillProbabilities(resource.resources);
+      }
+      resource?.fulfillProbability();
+    });
   }
 }

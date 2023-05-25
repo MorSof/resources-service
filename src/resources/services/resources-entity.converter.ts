@@ -17,6 +17,14 @@ export class ResourcesEntityConverter {
     entity.amount = resource.amount;
     entity.receivingProbability = resource.receivingProbability;
     entity.rarenessProbability = resource.rarenessProbability;
+    entity.resources = resource.resources?.map((childModel) => {
+      const childEntity = this.toEntity(childModel);
+      childEntity.ownerId = entity.ownerId;
+      childEntity.ownerType = entity.ownerType;
+      childEntity.groupId = entity.groupId;
+      childEntity.parent = entity;
+      return childEntity;
+    });
     entity.extraArgs = resource.extraArgs;
     return entity;
   }
@@ -32,6 +40,9 @@ export class ResourcesEntityConverter {
     model.amount = entity.amount;
     model.receivingProbability = entity.receivingProbability;
     model.rarenessProbability = entity.rarenessProbability;
+    model.resources = entity.resources?.map((resource) =>
+      this.toModel(resource),
+    );
     model.extraArgs = entity.extraArgs;
     return model;
   }

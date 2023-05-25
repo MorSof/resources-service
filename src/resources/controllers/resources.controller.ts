@@ -24,14 +24,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ResourceResponseDto } from '../dtos/resource-response.dto';
-import { CreateResourceRequestDto } from '../dtos/create-resource-request.dto';
-import { UpdateResourceRequestDto } from '../dtos/update-resource-request.dto';
 import { Resource } from '../models/resource.model';
 import { ResourcesDtoConverter } from '../services/resources-dto.converter';
 import { ResourcesService } from '../services/resources.service';
 import { OwnerType } from '../models/owner-type.enum';
 import { CollectResourceDto } from '../dtos/collect-resource-request.dto';
 import { UseResourceDto } from '../dtos/use-resource-request.dto';
+import { BaseResourceRequestDto } from '../dtos/base-resource-request.dto';
 
 @ApiTags('resources')
 @Controller('v1/resources')
@@ -47,13 +46,13 @@ export class ResourcesController {
     isArray: true,
   })
   @ApiBadRequestResponse({ description: 'Invalid input' })
-  @ApiBody({ type: [CreateResourceRequestDto] })
+  @ApiBody({ type: [BaseResourceRequestDto] })
   @Post()
   async create(
-    @Body() createResourcesRequestDto: CreateResourceRequestDto[],
+    @Body() createResourcesRequestDto: BaseResourceRequestDto[],
   ): Promise<ResourceResponseDto[]> {
     let resourceModels: Resource[] = createResourcesRequestDto.map(
-      (resourceDto: CreateResourceRequestDto) =>
+      (resourceDto: BaseResourceRequestDto) =>
         this.resourcesDtoConverter.toModel(resourceDto),
     );
 
@@ -72,7 +71,7 @@ export class ResourcesController {
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateResourceDto: UpdateResourceRequestDto,
+    @Body() updateResourceDto: BaseResourceRequestDto,
   ): Promise<ResourceResponseDto> {
     let resource: Resource =
       this.resourcesDtoConverter.toModel(updateResourceDto);

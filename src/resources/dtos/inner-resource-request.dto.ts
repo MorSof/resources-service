@@ -1,21 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OwnerType } from '../models/owner-type.enum';
 
-export class CreateResourceRequestDto {
-  @ApiProperty()
+/**
+ Added the InnerResourceRequestDto class just for swagger documentation,
+ because it didn't allow me to use the BaseResourceRequestDto type in the ApiProperty of the inner resources,
+ because it's not yet declared.
+ Also, this object doesn't include the InnerResourceRequestDto too, for the same reason.
+ Take a look at the BaseResourceRequestDto and see that the type of inner resources is BaseResourceRequestDto and not InnerResourceRequestDto,
+ so an inner resource is also a resource that contains inner resources
+ **/
+export class InnerResourceRequestDto {
   readonly ownerId: string;
 
-  @ApiProperty({
-    enum: [Object.values(OwnerType)],
-    default: 'user',
-  })
   readonly ownerType: OwnerType;
 
-  @ApiProperty({
-    required: false,
-    nullable: true,
-  })
-  readonly groupId?: string;
+  readonly groupId: string;
 
   @ApiProperty({
     default: 'currency',

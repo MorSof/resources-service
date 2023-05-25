@@ -3,6 +3,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -49,6 +52,15 @@ export class ResourceEntity {
     nullable: true,
   })
   rarenessProbability: number;
+
+  @OneToMany(() => ResourceEntity, (resource) => resource.parent, {
+    cascade: true,
+  })
+  resources?: ResourceEntity[];
+
+  @ManyToOne(() => ResourceEntity, (resource) => resource.resources)
+  @JoinColumn({ name: 'parent_id' })
+  parent?: ResourceEntity;
 
   @Check(`"receivingProbability" >= 0 AND "receivingProbability" <= 1`)
   receivingProbabilityRange: boolean;
