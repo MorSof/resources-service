@@ -1,42 +1,10 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://t3.ftcdn.net/jpg/02/05/78/12/360_F_205781253_acxA4jXNLyZN3XLFb7h3ySrXAlksPvXq.jpg" /></a>
+  <a href="http://nestjs.com/" target="blank"><img src="https://t3.ftcdn.net/jpg/02/05/78/12/360_F_205781253_acxA4jXNLyZN3XLFb7h3ySrXAlksPvXq.jpg" alt="NestJS" /></a>
 </p>
 
-## Rings Quest Backend
+# Resources Service
 
-### Run all services with docker compose
-
-#### Prerequisites
-
-Before you run on docker, make sure that you have the following requirements installed on your system:
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-
-#### Pull and run from dockerhub
-
-```shell
-$ docker-compose pull
-$ docker-compose up
-```
-
-On the first time running this, the app container should be failed:
-
-1.  Go to the DB section below and follow the orders there
-2.  ```shell
-    $ docker-compose down
-    $ docker-compose up
-    ```
-
-Now all the containers should work!
-
-The service is exposed on http://localhost:3555
-
-OpenApi (Swagger) is exposed here http://localhost:3555/api
-
-## Development
-
-### Prerequisites
+## Prerequisites
 
 Before you begin, make sure that you have the following requirements installed on your system:
 
@@ -45,7 +13,7 @@ Before you begin, make sure that you have the following requirements installed o
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
-### Installation
+## Installation
 
 ```shell
 $ nvm use
@@ -54,14 +22,11 @@ $ npm install
 
 ## Running locally
 
-#### Build and run docker-compose
+### Docker
+Navigate to the `rings-quest-ops` repository and follow the instructions in the README.md file to set up your working environment.
 
-```shell
-$ docker-compose build
-$ docker-compose up
-```
-
-#### Run the app
+### Run the app
+Open the terminal and run ONE of the following commands, depending on your needs:
 
 ```bash
 # development
@@ -78,38 +43,35 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## DB creation locally
+Now everything is set! The service is exposed at: http://localhost:3002
 
-After your docker-compose is up, you'll nee to create a DB:
+The OpenAPI (Swagger) documentation is available at: http://localhost:3002/api
 
-1. Navigate to [pdAdmin](http://localhost:5050/browser/)
-2. Press on the "Add New Server" Button, a popup window will appear.
-3. On the general tab name your server "rings_quest"
-4. On the connection tab:
-   - **Host name/address**: db
-   - **Port**: 5432
-   - **Username**: user
-   - **Password**: admin
-
-## Test
+## Testing
 
 ```bash
 # unit tests
 $ npm run test
+```
 
+```bash
 # e2e tests
 $ npm run test:e2e
+```
 
+```bash
 # test coverage
 $ npm run test:cov
 ```
 
-## Developer tips
+## Developer Tips
 
-- You should use this CLI commands to generate controllers/services/modules:
+- You can use the following CLI commands to generate controllers, services, and modules:
 
 ```shell
-$ nest generate module resources
-$ nest g controller resources/controllers/resources
-$ nest g service resources/services/resources
+$ nest generate module users
+$ nest g controller users/controllers/users
+$ nest g service users/services/users
 ```
+
+These commands are useful for generating the necessary files for your NestJS application. Replace `users` with the desired name for your module, controller, or service.
