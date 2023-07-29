@@ -28,9 +28,12 @@ import { Resource } from '../models/resource.model';
 import { ResourcesDtoConverter } from '../services/resources-dto.converter';
 import { ResourcesService } from '../services/resources.service';
 import { OwnerType } from '../models/owner-type.enum';
-import { CollectResourceDto } from '../dtos/collect-resource-request.dto';
-import { UseResourceDto } from '../dtos/use-resource-request.dto';
+import {
+  ResourceTransactionDto,
+  ResourceTransactionDtoArray,
+} from '../dtos/resource-transaction.dto';
 import { BaseResourceRequestDto } from '../dtos/base-resource-request.dto';
+import { ResourceTransactionDtoConverter } from '../services/resource-transaction-dto.converter';
 
 @ApiTags('resources')
 @Controller('v1/resources')
@@ -38,6 +41,7 @@ export class ResourcesController {
   constructor(
     private readonly resourcesService: ResourcesService,
     private readonly resourcesDtoConverter: ResourcesDtoConverter,
+    private readonly resourceTransactionDtoConverter: ResourceTransactionDtoConverter,
   ) {}
 
   @ApiOkResponse({
@@ -60,26 +64,6 @@ export class ResourcesController {
     return resourceModels.map((resource) =>
       this.resourcesDtoConverter.toDto(resource),
     );
-  }
-
-  @ApiOkResponse({
-    description: 'The resource updated successfully',
-    type: ResourceResponseDto,
-  })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
-  @ApiBadRequestResponse({ description: 'Invalid input' })
-  @Put(':id')
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateResourceDto: BaseResourceRequestDto,
-  ): Promise<ResourceResponseDto> {
-    let resource: Resource =
-      this.resourcesDtoConverter.toModel(updateResourceDto);
-    resource = await this.resourcesService.update(id, resource);
-    if (!resource) {
-      throw new NotFoundException(`Resource with id ${id} not found`);
-    }
-    return this.resourcesDtoConverter.toDto(resource);
   }
 
   @ApiOkResponse({
@@ -153,37 +137,56 @@ export class ResourcesController {
 
   @ApiOkResponse({
     description: 'The resource record',
-    type: ResourceResponseDto,
+    type: ResourceTransactionDtoArray,
   })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
   @ApiBadRequestResponse({ description: 'Invalid input' })
-  @Put(':id/collect')
+  @Put('/collect')
   async collect(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() collectResourceDto: CollectResourceDto,
-  ): Promise<ResourceResponseDto> {
-    const resource = await this.resourcesService.collect(
-      id,
-      collectResourceDto.amount,
+    @Body() resourceTransactionDtoArrays: ResourceTransactionDtoArray,
+  ): Promise<ResourceTransactionDtoArray> {
+    let resources = resourceTransactionDtoArrays.resources.map((dto) =>
+      this.resourceTransactionDtoConverter.toModel(dto),
     );
-    if (!resource) {
-      throw new NotFoundException(`Resource with id ${id} not found`);
-    }
-    return this.resourcesDtoConverter.toDto(resource);
+    resources = await this.resourcesService.collect(resources);
+    return {
+      resources: resources.map((resource) =>
+        this.resourceTransactionDtoConverter.toDto(resource),
+      ),
+    };
   }
 
   @ApiOkResponse({
     description: 'The resource record',
-    type: ResourceResponseDto,
+    type: ResourceTransactionDto,
   })
   @ApiNotFoundResponse({ description: 'Resource not found' })
   @ApiBadRequestResponse({ description: 'Invalid input' })
   @Put(':id/use')
   async use(
     @Param('id', ParseIntPipe) id: number,
-    @Body() useResourceDto: UseResourceDto,
-  ): Promise<ResourceResponseDto> {
+    @Body() useResourceDto: ResourceTransactionDto,
+  ): Promise<ResourceTransactionDto> {
     const resource = await this.resourcesService.use(id, useResourceDto.amount);
+    if (!resource) {
+      throw new NotFoundException(`Resource with id ${id} not found`);
+    }
+    return this.resourceTransactionDtoConverter.toDto(resource);
+  }
+
+  @ApiOkResponse({
+    description: 'The resource updated successfully',
+    type: ResourceResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiBadRequestResponse({ description: 'Invalid input' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateResourceDto: BaseResourceRequestDto,
+  ): Promise<ResourceResponseDto> {
+    let resource: Resource =
+      this.resourcesDtoConverter.toModel(updateResourceDto);
+    resource = await this.resourcesService.update(id, resource);
     if (!resource) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }

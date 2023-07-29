@@ -8,12 +8,14 @@ import { ResourceEntity } from './entities/resource.entity';
 import { RingsQuestResourcesFactory } from '../rings-quest-resources/services/rings-quest-resources-factory.service';
 import { ResourcesFactory } from './services/resources-factory.service';
 import { ConfigService } from '@nestjs/config';
+import { ResourceTransactionDtoConverter } from './services/resource-transaction-dto.converter';
 
 @Module({
   controllers: [ResourcesController],
   providers: [
     ResourcesService,
     ResourcesDtoConverter,
+    ResourceTransactionDtoConverter,
     ResourcesEntityConverter,
     {
       provide: ResourcesFactory,

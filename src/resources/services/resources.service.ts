@@ -4,11 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { ResourceEntity } from '../entities/resource.entity';
 import { ResourcesEntityConverter } from './resources-entity.converter';
 import { Resource } from '../models/resource.model';
 import { OwnerType } from '../models/owner-type.enum';
+import { ResourceTransaction } from '../models/resource-transaction.model';
 
 @Injectable()
 export class ResourcesService {
@@ -92,40 +93,63 @@ export class ResourcesService {
     }
   }
 
-  async collect(id: number, amount: number): Promise<Resource> {
-    const entity = await this.resourceRepository.findOneBy({ id });
-    if (!entity) {
-      throw new NotFoundException(`Resource with id ${id} not found`);
+  async collect(
+    resources: ResourceTransaction[],
+  ): Promise<ResourceTransaction[]> {
+    const ids = resources.map((resource) => resource.id);
+    const entities = await this.resourceRepository.findBy({ id: In(ids) });
+
+    if (!entities?.length) {
+      throw new NotFoundException(
+        `Resources with ids ${ids.join(', ')} not found`,
+      );
     }
-    if (entity.amount != null) {
-      entity.amount += amount;
-    } else {
-      throw new BadRequestException(`Resource with id ${id} amount is null`);
+
+    const updatedEntities: Resource[] = [];
+
+    for (const entity of entities) {
+      const resource = resources.find((resource) => resource.id === entity.id);
+
+      if (!resource) {
+        continue; // skip if no corresponding resource found in input
+      }
+
+      if (entity.amount != null) {
+        entity.amount += resource.amount;
+      } else {
+        throw new BadRequestException(
+          `Resource with id ${entity.id} amount is null`,
+        );
+      }
+
+      const updatedEntity = await this.resourceRepository.save(entity);
+      updatedEntities.push(this.converter.toModel(updatedEntity));
     }
-    const updatedEntity = await this.resourceRepository.save(entity);
-    return this.converter.toModel(updatedEntity);
+
+    return updatedEntities.map((entity) => ({
+      id: entity.id,
+      amount: entity.amount,
+    }));
   }
 
-  async use(id: number, amount: number): Promise<Resource> {
+  async use(id: number, amount: number): Promise<ResourceTransaction> {
     const entity = await this.resourceRepository.findOneBy({ id });
     if (!entity) {
       throw new NotFoundException(`Resource with id ${id} not found`);
     }
     if (entity.amount != null) {
-      if (entity.amount - amount > 0) {
+      if (entity.amount - amount >= 0) {
         entity.amount -= amount;
       } else {
         throw new BadRequestException(
-          `Not enough amount to use. 
-          Requested: ${amount}, 
-          Actual: ${entity.amount}`,
+          `Not enough amount to use. Requested: ${amount}, Actual: ${entity.amount}`,
         );
       }
     } else {
       throw new BadRequestException(`Resource with id ${id} amount is null`);
     }
     const updatedEntity = await this.resourceRepository.save(entity);
-    return this.converter.toModel(updatedEntity);
+    return { amount: updatedEntity.amount, id: updatedEntity.id };
   }
 
   private fulfillProbabilities(resources: Resource[]) {
