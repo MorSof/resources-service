@@ -1,0 +1,175 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "Resources API"
+paths:
+  /v1/resources:
+    post:
+      responses:
+        '200':
+          description: "The resource created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponseDtoArray'
+        '400':
+          description: "Invalid input"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseResourceRequestDtoArray'
+  /v1/resources/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fulfillProbability
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: "The resource record"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponseDto'
+        '404':
+          description: "Resource not found"
+
+components:
+  schemas:
+    BaseResourceRequestDto:
+      type: object
+      properties:
+        ownerId:
+          type: string
+        ownerType:
+          type: string
+          enum: [ user, level, bar ]
+          default: user
+        groupId:
+          type: string
+          nullable: true
+        type:
+          type: string
+          default: wrapper
+        name:
+          type: string
+          default: chest
+        amount:
+          type: number
+          nullable: true
+          default: null
+        receivingProbability:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+          default: 1
+        rarenessProbability:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+          default: 0.5
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseResourceRequestDto'
+          nullable: true
+        extraArgs:
+          type: object
+          additionalProperties: true
+          nullable: true
+      example:
+        ownerId: "string"
+        ownerType: bar
+        groupId: "string"
+        type: wrapper
+        name: chest
+        amount: null
+        receivingProbability: 1
+        rarenessProbability: 0.5
+        resources:
+          - ownerId: "string"
+            ownerType: bar
+            groupId: "string"
+            type: currency
+            name: coins
+            amount: null
+            receivingProbability: 1
+            rarenessProbability: 0.5
+        extraArgs:
+          someKey: someValue
+    BaseResourceRequestDtoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/BaseResourceRequestDto'
+    ResourceResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        ownerId:
+          type: string
+        ownerType:
+          type: string
+          enum: [user, level, bar]
+        groupId:
+          type: string
+          nullable: true
+        type:
+          type: string
+        name:
+          type: string
+        amount:
+          type: number
+          nullable: true
+        receivingProbability:
+          type: number
+          nullable: true
+        rarenessProbability:
+          type: number
+          nullable: true
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceResponseDto'
+          nullable: true
+        extraArgs:
+          type: object
+          additionalProperties: true
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    ResourceResponseDtoArray:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceResponseDto'
+    ResourceTransactionDto:
+      type: object
+      properties:
+        amount:
+          type: number
+        id:
+          type: integer
+    ResourceTransactionDtoArray:
+      type: object
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceTransactionDto'

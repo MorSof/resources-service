@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Resource } from '../models/resource.model';
-import { ResourceResponseDto } from '../dtos/resource-response.dto';
 import { ResourcesFactory } from './resources-factory.service';
-import { BaseResourceRequestDto } from '../dtos/base-resource-request.dto';
+import { BaseResourceRequestDto, ResourceResponseDto } from '../../api/build';
+import { OwnerType } from '../models/owner-type.enum';
 
 @Injectable()
 export class ResourcesDtoConverter {
@@ -10,7 +10,7 @@ export class ResourcesDtoConverter {
   public toModel(dto: BaseResourceRequestDto): Resource {
     const model = this.resourcesFactory.create(dto.name, dto.type);
     model.ownerId = dto.ownerId;
-    model.ownerType = dto.ownerType;
+    model.ownerType = this.toOwnerType(dto.ownerType);
     model.groupId = dto.groupId;
     model.type = dto.type;
     model.name = dto.name;
@@ -38,5 +38,13 @@ export class ResourcesDtoConverter {
     dto.updatedAt = model.updatedAt;
     dto.createdAt = model.createdAt;
     return dto;
+  }
+
+  private toOwnerType(value: string): OwnerType {
+    const ownerType = OwnerType[value.toUpperCase() as keyof typeof OwnerType];
+    if (!ownerType) {
+      throw new BadRequestException(`Invalid OwnerType value: ${value}`);
+    }
+    return ownerType;
   }
 }

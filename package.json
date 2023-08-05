@@ -54,7 +54,10 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "swagger-ui-express": "^4.6.2",
+    "yamljs": "^0.3.0",
+    "whatwg-fetch": "^3.6.2"
   },
   "jest": {
     "moduleFileExtensions": [

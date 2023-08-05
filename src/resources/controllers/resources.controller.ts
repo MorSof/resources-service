@@ -4,8 +4,6 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   NotFoundException,
   Param,
   ParseBoolPipe,
@@ -14,26 +12,18 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ResourceResponseDto } from '../dtos/resource-response.dto';
+import { ApiTags } from '@nestjs/swagger';
 import { Resource } from '../models/resource.model';
 import { ResourcesDtoConverter } from '../services/resources-dto.converter';
 import { ResourcesService } from '../services/resources.service';
 import { OwnerType } from '../models/owner-type.enum';
+import { ResourceTransactionDtoConverter } from '../services/resource-transaction-dto.converter';
 import {
+  BaseResourceRequestDto,
+  ResourceResponseDto,
   ResourceTransactionDto,
   ResourceTransactionDtoArray,
-} from '../dtos/resource-transaction.dto';
-import { BaseResourceRequestDto } from '../dtos/base-resource-request.dto';
-import { ResourceTransactionDtoConverter } from '../services/resource-transaction-dto.converter';
+} from '../../api/build';
 
 @ApiTags('resources')
 @Controller('v1/resources')
@@ -44,13 +34,6 @@ export class ResourcesController {
     private readonly resourceTransactionDtoConverter: ResourceTransactionDtoConverter,
   ) {}
 
-  @ApiOkResponse({
-    description: 'The resource created successfully',
-    type: ResourceResponseDto,
-    isArray: true,
-  })
-  @ApiBadRequestResponse({ description: 'Invalid input' })
-  @ApiBody({ type: [BaseResourceRequestDto] })
   @Post()
   async create(
     @Body() createResourcesRequestDto: BaseResourceRequestDto[],
@@ -66,12 +49,6 @@ export class ResourcesController {
     );
   }
 
-  @ApiOkResponse({
-    description: 'The resource record',
-    type: ResourceResponseDto,
-  })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
-  @ApiQuery({ name: 'fulfillProbability', type: Boolean, required: false })
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe) id: number,
@@ -88,15 +65,6 @@ export class ResourcesController {
     return this.resourcesDtoConverter.toDto(resource);
   }
 
-  @ApiOkResponse({
-    description: 'The resources records',
-    type: ResourceResponseDto,
-    isArray: true,
-  })
-  @ApiQuery({ name: 'fulfillProbability', type: Boolean, required: false })
-  @ApiQuery({ name: 'ownerId', type: String, required: false })
-  @ApiQuery({ name: 'ownerType', type: String, required: false })
-  @ApiQuery({ name: 'groupId', type: String, required: false })
   @Get()
   async findByValue(
     @Query('ownerId') ownerId: string,
@@ -116,18 +84,12 @@ export class ResourcesController {
     );
   }
 
-  @ApiResponse({ status: 200, description: 'Resource deleted successfully' })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return await this.resourcesService.delete(id);
   }
 
-  @ApiResponse({ status: 200, description: 'Resource deleted successfully' })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
   @Delete('/owner/:ownerType/:ownerId')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async removeByOwnerId(
     @Param('ownerType') ownerType: OwnerType,
     @Param('ownerId') ownerId: string,
@@ -135,11 +97,6 @@ export class ResourcesController {
     return await this.resourcesService.deleteByOwner(ownerType, ownerId);
   }
 
-  @ApiOkResponse({
-    description: 'The resource record',
-    type: ResourceTransactionDtoArray,
-  })
-  @ApiBadRequestResponse({ description: 'Invalid input' })
   @Put('/collect')
   async collect(
     @Body() resourceTransactionDtoArrays: ResourceTransactionDtoArray,
@@ -155,12 +112,6 @@ export class ResourcesController {
     };
   }
 
-  @ApiOkResponse({
-    description: 'The resource record',
-    type: ResourceTransactionDto,
-  })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
-  @ApiBadRequestResponse({ description: 'Invalid input' })
   @Put(':id/use')
   async use(
     @Param('id', ParseIntPipe) id: number,
@@ -173,12 +124,6 @@ export class ResourcesController {
     return this.resourceTransactionDtoConverter.toDto(resource);
   }
 
-  @ApiOkResponse({
-    description: 'The resource updated successfully',
-    type: ResourceResponseDto,
-  })
-  @ApiNotFoundResponse({ description: 'Resource not found' })
-  @ApiBadRequestResponse({ description: 'Invalid input' })
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

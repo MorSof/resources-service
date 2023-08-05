@@ -18,6 +18,8 @@ Before you begin, make sure that you have the following requirements installed o
 ```shell
 $ nvm use
 $ npm install
+$ npm install @openapitools/openapi-generator-cli -g
+$ openapi-generator-cli generate -i ./src/api/openapi/spec.yaml -g typescript -o ./src/api/build
 ```
 
 ## Running locally

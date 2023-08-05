@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ResourceTransactionDto } from '../dtos/resource-transaction.dto';
 import { ResourceTransaction } from '../models/resource-transaction.model';
+import { ResourceTransactionDto } from '../../api/build';
 
 @Injectable()
 export class ResourceTransactionDtoConverter {
