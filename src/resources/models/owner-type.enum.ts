@@ -1,5 +1,5 @@
 export enum OwnerType {
-  USER = 'user',
+  PLAYER = 'player',
   LEVEL = 'level',
   BAR = 'bar',
 }

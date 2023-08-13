@@ -51,8 +51,8 @@ components:
           type: string
         ownerType:
           type: string
-          enum: [ user, level, bar ]
-          default: user
+          enum: [ player, level, bar ]
+          default: player
         groupId:
           type: string
           nullable: true
@@ -120,7 +120,7 @@ components:
           type: string
         ownerType:
           type: string
-          enum: [user, level, bar]
+          enum: [player, level, bar]
         groupId:
           type: string
           nullable: true
