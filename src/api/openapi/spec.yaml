@@ -19,6 +19,32 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BaseResourceRequestDtoArray'
+    get:
+      responses:
+        '200':
+          description: "The resource list"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponseDtoArray'
+      parameters:
+        - name: ownerId
+          in: query
+          schema:
+            type: string
+        - name: ownerType
+          in: query
+          schema:
+            type: string
+        - name: groupId
+          in: query
+          schema:
+            type: string
+        - name: fulfillProbability
+          in: query
+          schema:
+            type: boolean
+            default: false
   /v1/resources/{id}:
     get:
       parameters:
@@ -41,6 +67,90 @@ paths:
                 $ref: '#/components/schemas/ResourceResponseDto'
         '404':
           description: "Resource not found"
+    delete:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Resource deleted successfully"
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Resource updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceResponseDto'
+        '404':
+          description: "Resource not found"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseResourceRequestDto'
+  /v1/resources/{id}/use:
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Resource used successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceTransactionDto'
+        '404':
+          description: "Resource not found"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceTransactionDto'
+  /v1/resources/collect:
+    put:
+      responses:
+        '200':
+          description: "Resources collected successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceTransactionDtoArray'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceTransactionDtoArray'
+  /v1/resources/owner/{ownerType}/{ownerId}:
+    delete:
+      parameters:
+        - name: ownerType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [player, level, bar]
+        - name: ownerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Resources deleted successfully by owner type and owner ID"
 
 components:
   schemas:
@@ -153,12 +263,9 @@ components:
           type: string
           format: date-time
     ResourceResponseDtoArray:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceResponseDto'
+      type: array
+      items:
+        $ref: '#/components/schemas/ResourceResponseDto'
     ResourceTransactionDto:
       type: object
       properties:
