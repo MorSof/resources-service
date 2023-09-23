@@ -62,24 +62,26 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-  docker-deploy:
+  push-docker-image:
     needs: build-and-test
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: Set Up QEMU Emulator
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      - name: Configure Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Login to Docker Registry
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and Push Docker Image
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-north-1
+      - name: Build and push to ECR
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: morsof48/resources-service:latest
+          tags: 224983445169.dkr.ecr.eu-north-1.amazonaws.com/resources-service:latest
