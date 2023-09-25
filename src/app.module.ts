@@ -11,16 +11,39 @@ import { ResourceEntity } from './resources/entities/resource.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +configService.get<number>('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        entities: [ResourceEntity],
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        console.log(
+          'configService.get("DB_HOST")',
+          configService.get('DB_HOST'),
+        );
+        console.log(
+          'configService.get("DB_PORT")',
+          configService.get('DB_PORT'),
+        );
+
+        console.log(
+          'configService.get("DB_USERNAME")',
+          configService.get('DB_USERNAME'),
+        );
+
+        console.log(
+          'configService.get("DB_PASSWORD")',
+          configService.get('DB_PASSWORD'),
+        );
+        return {
+          type: 'postgres',
+          host: configService.get('DB_HOST'),
+          port: +configService.get<number>('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_NAME'),
+          entities: [ResourceEntity],
+          synchronize: true,
+          ssl: {
+            rejectUnauthorized: false, // You might need this if RDS is using self-signed certificates
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     ResourcesModule,
