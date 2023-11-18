@@ -30,7 +30,7 @@ import { ResourceEntity } from './resources/entities/resource.entity';
           'configService.get("DB_PASSWORD")',
           configService.get('DB_PASSWORD'),
         );
-        return {
+        const config: any = {
           type: 'postgres',
           host: configService.get('DB_HOST'),
           port: +configService.get<number>('DB_PORT'),
@@ -39,10 +39,16 @@ import { ResourceEntity } from './resources/entities/resource.entity';
           database: configService.get('DB_NAME'),
           entities: [ResourceEntity],
           synchronize: true,
-          ssl: {
-            rejectUnauthorized: false, // You might need this if RDS is using self-signed certificates
-          },
         };
+
+        if (
+          configService.get('DB_HOST') != 'localhost' &&
+          configService.get('DB_HOST') != 'db'
+        ) {
+          config.ssl = { rejectUnauthorized: false };
+        }
+
+        return config;
       },
       inject: [ConfigService],
     }),
